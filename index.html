@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Apollo Lead Intake Demo</title>
+<style>
+:root{
+  --bg:#f3f5f9; --card:#ffffff; --ink:#172033; --muted:#5b6678; --line:#dde3ec;
+  --brand:#1d3a6b; --brand-2:#2f62c4; --ok:#1f8a4c; --ok-bg:#e7f6ed; --warn:#9a5b00; --warn-bg:#fff4e0;
+  --bad:#b42318; --bad-bg:#fdecea; --chip:#eef3fb;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+header{background:var(--brand);color:#fff;padding:18px 24px}
+header .wrap{max-width:1180px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+header h1{margin:0;font-size:20px;font-weight:650}
+header p{margin:2px 0 0;opacity:.8;font-size:13px}
+.badge{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);border-radius:999px;padding:4px 12px;font-size:12px}
+main{max-width:1180px;margin:0 auto;padding:22px 16px 48px}
+.grid{display:grid;grid-template-columns:1.05fr .95fr;gap:20px;align-items:start}
+@media (max-width:900px){.grid{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;box-shadow:0 1px 2px rgba(16,24,40,.04)}
+.card h2{margin:0 0 4px;font-size:18px}
+.card .sub{margin:0 0 18px;color:var(--muted);font-size:13.5px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:520px){.row{grid-template-columns:1fr}}
+label{display:block;font-size:12.5px;font-weight:600;color:var(--muted);margin:0 0 5px}
+input,select{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:9px;font:inherit;color:var(--ink);background:#fff}
+input:focus,select:focus{outline:2px solid #bcd0f5;border-color:var(--brand-2)}
+.field{margin-bottom:12px}
+.check{display:flex;gap:8px;align-items:flex-start;font-size:13px;color:var(--muted);margin:6px 0 16px}
+.check input{width:auto;margin-top:3px}
+.btns{display:flex;gap:10px;flex-wrap:wrap}
+button{font:inherit;font-weight:600;border-radius:9px;padding:11px 18px;cursor:pointer;border:1px solid transparent}
+.primary{background:var(--brand-2);color:#fff}
+.primary:disabled{opacity:.6;cursor:wait}
+.ghost{background:#fff;border-color:var(--line);color:var(--ink)}
+.steps{list-style:none;margin:0;padding:0}
+.step{display:flex;gap:12px;padding:12px 0;border-top:1px solid var(--line)}
+.step:first-child{border-top:0}
+.dot{flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:700;background:#e9edf3;color:var(--muted)}
+.step.done .dot{background:var(--ok-bg);color:var(--ok)}
+.step.warn .dot{background:var(--warn-bg);color:var(--warn)}
+.step.fail .dot{background:var(--bad-bg);color:var(--bad)}
+.step.wait .dot{background:var(--chip);color:var(--brand-2)}
+.step b{display:block;font-size:14.5px}
+.step span{color:var(--muted);font-size:13.5px}
+.step a{color:var(--brand-2);font-weight:600;text-decoration:none}
+.step a:hover{text-decoration:underline}
+.msg{margin-top:14px;padding:10px 12px;border-radius:9px;font-size:13.5px;display:none}
+.msg.ok{display:block;background:var(--ok-bg);color:var(--ok)}
+.msg.bad{display:block;background:var(--bad-bg);color:var(--bad)}
+.msg.warn{display:block;background:var(--warn-bg);color:var(--warn)}
+.timer{font-variant-numeric:tabular-nums;font-weight:700;color:var(--brand)}
+section.cfg{margin-top:22px}
+section.cfg h2{font-size:18px;margin:0 0 4px}
+.cfg-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px}
+@media (max-width:900px){.cfg-grid{grid-template-columns:1fr}}
+.cfg-grid .card{padding:18px}
+.cfg-grid h3{margin:0 0 8px;font-size:15px}
+.cfg-grid ul{margin:0;padding-left:18px;color:var(--ink);font-size:13.5px}
+.cfg-grid li{margin:4px 0}
+.cfg-grid li em{font-style:normal;color:var(--muted)}
+table{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:6px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--muted);font-weight:600;font-size:12.5px;background:#f8fafc}
+.chip{display:inline-block;background:var(--chip);color:var(--brand);border-radius:999px;padding:2px 9px;font-size:12px;font-weight:600;margin:1px 2px 1px 0}
+.note{font-size:12.5px;color:var(--muted);margin-top:10px}
+code{font:12.5px Menlo,Consolas,monospace;background:#f1f4f8;padding:1px 5px;border-radius:5px}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div>
+      <h1>Apollo Demo College · Request Information</h1>
+      <p>Sample website inquiry form connected to Apollo SRM (demo account 90, fictional data)</p>
+    </div>
+    <div><span class="badge" id="conn">Not connected</span> <a href="#" id="disconnect" style="color:#cfe0ff;font-size:12px;margin-left:8px;display:none">Disconnect</a></div>
+  </div>
+</header>
+
+<main>
+  <div class="card" id="connect" style="margin-bottom:20px;display:none">
+    <h2>Connect to Apollo (one time, before the demo)</h2>
+    <p class="sub">In Apollo demo 90, open <b>Prospects &gt; Lead Intake</b>, copy the webhook token from the Configuration tab, and paste it here. It is saved only in this browser.</p>
+    <div class="row" style="grid-template-columns:1fr auto">
+      <input id="tokenInput" type="password" placeholder="Paste the Lead Intake token">
+      <button class="primary" id="saveToken" type="button">Connect</button>
+    </div>
+  </div>
+  <div class="grid">
+    <!-- The website form -->
+    <div class="card">
+      <h2>Start your career in healthcare or the trades</h2>
+      <p class="sub">Tell us a little about yourself and an admissions representative will contact you.</p>
+      <form id="f" autocomplete="off">
+        <div class="row">
+          <div class="field"><label for="firstName">First name</label><input id="firstName" required></div>
+          <div class="field"><label for="lastName">Last name</label><input id="lastName" required></div>
+        </div>
+        <div class="row">
+          <div class="field"><label for="email">Email</label><input id="email" type="email" required></div>
+          <div class="field"><label for="phone">Mobile phone</label><input id="phone" required></div>
+        </div>
+        <div class="row">
+          <div class="field"><label for="campus">Campus</label>
+            <select id="campus">
+              <option value="AUS">AUS campus</option>
+              <option value="SAT">SAT campus</option>
+              <option value="ONL">ONL (online)</option>
+            </select>
+          </div>
+          <div class="field"><label for="program">Program of interest</label>
+            <select id="program">
+              <optgroup label="Healthcare">
+                <option value="MA">Medical Assistant</option>
+                <option value="PN">Practical Nursing</option>
+                <option value="PHLB">Phlebotomy Technician</option>
+                <option value="MBC">Medical Billing and Coding</option>
+              </optgroup>
+              <optgroup label="Skilled Trades">
+                <option value="HVAC">HVAC/R Technician</option>
+                <option value="ELEC">Electrical Technician</option>
+                <option value="WELD">Combination Welding</option>
+                <option value="AUTO">Automotive Technology</option>
+              </optgroup>
+            </select>
+          </div>
+        </div>
+        <div class="row">
+          <div class="field"><label for="zip">ZIP code</label><input id="zip" inputmode="numeric"></div>
+          <div class="field"><label for="start">Desired start date</label><input id="start" type="date"></div>
+        </div>
+        <label class="check"><input type="checkbox" id="sms" checked> I agree to receive calls and text messages about my inquiry.</label>
+        <div class="btns">
+          <button class="primary" id="submit" type="submit">Request information</button>
+          <button class="ghost" id="sample" type="button">Fill sample lead</button>
+        </div>
+        <div class="msg" id="msg"></div>
+      </form>
+    </div>
+
+    <!-- What happens in Apollo -->
+    <div class="card">
+      <h2>What happens in Apollo</h2>
+      <p class="sub">Updates the moment the form is sent. Open each step in Apollo to show it live.</p>
+      <ol class="steps" id="steps">
+        <li class="step" id="s1"><div class="dot">1</div><div><b>Lead received</b><span>Waiting for an inquiry.</span></div></li>
+        <li class="step" id="s2"><div class="dot">2</div><div><b>Duplicate check</b><span>Apollo compares email and phone with existing records.</span></div></li>
+        <li class="step" id="s3"><div class="dot">3</div><div><b>Assigned to an admissions rep</b><span>The assignment rules pick the rep by campus, program and workload.</span></div></li>
+        <li class="step" id="s4"><div class="dot">4</div><div><b>First Contact task created</b><span>High priority, due 30 business minutes after the lead arrives.</span></div></li>
+      </ol>
+      <p class="note">Speed to lead: <span class="timer" id="timer">--:--</span> since this lead arrived.</p>
+    </div>
+  </div>
+
+  <!-- Assignment configuration -->
+  <section class="cfg">
+    <h2>How Apollo assigns leads to admissions reps</h2>
+    <p class="sub" style="color:var(--muted);margin:0">Everything below is configured by the school in Prospects &gt; Lead Assignment. No code changes.</p>
+
+    <div class="cfg-grid">
+      <div class="card">
+        <h3>Rules</h3>
+        <ul>
+          <li><b>Selection method</b>
+            <ul>
+              <li>Load balanced <em>fewest open leads first</em></li>
+              <li>Round robin <em>takes turns</em></li>
+              <li>Weighted round robin <em>senior reps get more</em></li>
+              <li>Longest idle <em>whoever waited longest</em></li>
+            </ul>
+          </li>
+          <li><b>Working hours</b> <em>assign only to reps on the clock</em></li>
+          <li><b>After hours</b> <em>assign anyway, hold until opening, or send to a backup rep</em></li>
+          <li><b>Capacity</b> <em>stop at each rep's maximum, or allow over capacity</em></li>
+          <li><b>Open lead statuses</b> <em>which statuses count toward workload</em></li>
+          <li><b>Notifications</b> <em>email or in-app to the rep; admin alert if a lead can't be assigned</em></li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Reps</h3>
+        <ul>
+          <li><b>Who is a rep</b> <em>any employee marked Admissions Representative</em></li>
+          <li><b>Campuses</b> <em>each rep covers the campuses they're assigned to</em></li>
+          <li><b>Program categories</b> <em>which categories each rep may receive</em></li>
+          <li><b>Availability</b> <em>available or away, with an "away until" date</em></li>
+          <li><b>Schedule</b> <em>working days, hours and time zone</em></li>
+          <li><b>Weight</b> <em>share of leads in weighted round robin</em></li>
+          <li><b>Max open leads</b> <em>per-rep capacity</em></li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Programs, queue and log</h3>
+        <ul>
+          <li><b>Categories</b> <em>group programs, for example Healthcare and Skilled Trades</em></li>
+          <li><b>Programs</b> <em>each program belongs to one category</em></li>
+          <li><b>Unassigned</b> <em>leads no rep could take, with the reason, assigned by hand in one click</em></li>
+          <li><b>Log</b> <em>every assignment and reassignment: when, to whom, why</em></li>
+          <li><b>Reassign</b> <em>move a lead to another rep, with the reason recorded</em></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:14px">
+      <h3 style="margin:0 0 4px;font-size:15px">Current setup on this demo</h3>
+      <table>
+        <thead><tr><th>Category</th><th>Programs</th><th>Reps</th></tr></thead>
+        <tbody>
+          <tr><td>Healthcare</td><td><span class="chip">MA</span><span class="chip">PN</span><span class="chip">PHLB</span><span class="chip">MBC</span></td><td id="healthReps">Carlos Arreola (AUS, SAT, ONL), Elias Brisasuave (AUS), Linh Merryhaven (AUS), Colton Ploverford (SAT)</td></tr>
+          <tr><td>Skilled Trades</td><td><span class="chip">HVAC</span><span class="chip">ELEC</span><span class="chip">WELD</span><span class="chip">AUTO</span></td><td>Carlos Arreola (AUS, SAT, ONL), Colton Ploverford (SAT)</td></tr>
+        </tbody>
+      </table>
+      <p class="note">Method: load balanced, assign any time, internal notification to the rep. A new rep with no open leads receives the next lead for their campus and category.</p>
+    </div>
+  </section>
+</main>
+
+<script>
+// ---- Connection (demo account 90 only). Keep this file private; regenerate the token in Apollo after the demo.
+const WEBHOOK_URL = 'https://demo.apollosrm.com/apollosrm-yii2/apileadintake/webhook';
+// The token is NOT stored in this file. Paste it once (Prospects > Lead Intake > Configuration in Apollo); it is kept
+// only in this browser's local storage. Clear it with the Disconnect link.
+const APOLLO = 'https://demo.apollosrm.com/app/admin';
+const KEY = 'apolloDemoLeadIntakeToken';
+let TOKEN = '';
+try { TOKEN = localStorage.getItem(KEY) || ''; } catch (e) {}
+
+const $ = id => document.getElementById(id);
+let connected = false;
+function refreshConn(){
+  connected = !!TOKEN;
+  $('conn').textContent = connected ? 'Connected to Apollo · demo 90' : 'Not connected';
+  $('connect').style.display = connected ? 'none' : 'block';
+  $('disconnect').style.display = connected ? 'inline' : 'none';
+}
+$('saveToken').addEventListener('click', () => {
+  const v = $('tokenInput').value.trim();
+  if (!v) return;
+  TOKEN = v; try { localStorage.setItem(KEY, v); } catch (e) {}
+  $('tokenInput').value = ''; refreshConn();
+});
+$('disconnect').addEventListener('click', (e) => {
+  e.preventDefault(); TOKEN = ''; try { localStorage.removeItem(KEY); } catch (e2) {} refreshConn();
+});
+refreshConn();
+
+const first = ['Maya','Jordan','Ava','Elena','Marcus','Sofia','Daniel','Grace','Andre','Lily','Noah','Camila'];
+const last  = ['Torres','Reyes','Bennett','Hollis','Ramirez','Whitfield','Okafor','Lindqvist','Castillo','Pryor'];
+const pick = a => a[Math.floor(Math.random()*a.length)];
+function sample(){
+  const fn = pick(first), ln = pick(last), n = Math.floor(1000 + Math.random()*8999);
+  $('firstName').value = fn; $('lastName').value = ln;
+  $('email').value = (fn+'.'+ln+n).toLowerCase()+'@example.com';
+  $('phone').value = '(512) 555-' + String(n).slice(-4);
+  $('zip').value = '78701';
+  const d = new Date(); d.setDate(d.getDate()+60); $('start').value = d.toISOString().slice(0,10);
+}
+$('sample').addEventListener('click', sample);
+
+function setStep(id, cls, title, html){
+  const el = $(id); el.className = 'step ' + cls;
+  el.querySelector('b').textContent = title;
+  el.querySelector('span').innerHTML = html;
+}
+function resetSteps(){
+  setStep('s1','wait','Lead received','Sending to Apollo…');
+  setStep('s2','','Duplicate check','Apollo compares email and phone with existing records.');
+  setStep('s3','','Assigned to an admissions rep','The assignment rules pick the rep by campus, program and workload.');
+  setStep('s4','','First Contact task created','High priority, due 30 business minutes after the lead arrives.');
+}
+let t0 = null, tick = null;
+function startTimer(){
+  t0 = Date.now(); clearInterval(tick);
+  tick = setInterval(() => {
+    const s = Math.floor((Date.now()-t0)/1000);
+    $('timer').textContent = String(Math.floor(s/60)).padStart(2,'0') + ':' + String(s%60).padStart(2,'0');
+  }, 1000);
+}
+function showMsg(cls, text){ const m = $('msg'); m.className = 'msg ' + cls; m.textContent = text; }
+
+$('f').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  if (!connected){ showMsg('bad','Connect the page to Apollo first: paste the Lead Intake token in the box above the form.'); return; }
+  $('submit').disabled = true; showMsg('', ''); $('msg').className = 'msg'; resetSteps();
+  const payload = {
+    externalId: 'web-' + Date.now(),
+    firstName: $('firstName').value.trim(), lastName: $('lastName').value.trim(),
+    email: $('email').value.trim(), phone: $('phone').value.trim(),
+    campus: $('campus').value, program: $('program').value,
+    zip: $('zip').value.trim(), desiredStartDate: $('start').value,
+    leadSource: 'Website', leadDate: new Date().toISOString(),
+    smsConsent: $('sms').checked ? 'yes' : 'no'
+  };
+  try{
+    const r = await fetch(WEBHOOK_URL, {method:'POST', headers:{'Content-Type':'application/json','X-Apollo-Token':TOKEN}, body:JSON.stringify(payload)});
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok || j.status !== 'ok'){
+      setStep('s1','fail','Lead not received', (j.message || ('HTTP ' + r.status)) + (j.errors ? ' · ' + Object.values(j.errors).join(' ') : ''));
+      showMsg('bad','Apollo did not accept the lead. See step 1.'); return;
+    }
+    const d = j.data || {};
+    const lead = APOLLO + '/students/student/' + d.studentId + '?context=prospect';
+    const warn = (d.warnings && d.warnings.length) ? '<br>Note: ' + d.warnings.join(' ') : '';
+    if (d.action === 'created'){
+      startTimer();
+      setStep('s1','done','Lead received', 'Prospect <b style="display:inline">' + (d.studentNo||'') + '</b> created from the website form. <a href="' + lead + '" target="_blank">Open the lead</a>' + warn);
+      setStep('s2','done','Duplicate check passed','No existing record with this email or phone, so a new prospect was created.');
+      setStep('s3','done','Assigned to an admissions rep','Assigned automatically by the rules below. <a href="' + APOLLO + '/lead-assignment" target="_blank">See it in the Assignment Log</a> (Log tab, Refresh).');
+      setStep('s4','done','First Contact task created','Due 30 business minutes from now. <a href="' + APOLLO + '/admissions/my-work" target="_blank">Open My Work</a> (Due Today).');
+      showMsg('ok','Thank you! An admissions representative will contact you shortly.');
+    } else {
+      setStep('s1','done','Lead received', 'Matched existing prospect <b style="display:inline">' + (d.studentNo||'') + '</b>. <a href="' + lead + '" target="_blank">Open the lead</a>' + warn);
+      setStep('s2','warn','Duplicate caught','This email or phone already belongs to a prospect, so Apollo refreshed that record instead of creating a second one.');
+      setStep('s3','warn','Rep unchanged','The existing prospect keeps their rep.');
+      setStep('s4','warn','No new First Contact','The lead is already being worked.');
+      showMsg('warn','Repeat inquiry: Apollo updated the existing prospect instead of creating a duplicate.');
+    }
+  }catch(err){
+    setStep('s1','fail','Could not reach Apollo', String(err));
+    showMsg('bad','Network error. Check the internet connection and try again.');
+  }finally{
+    $('submit').disabled = false;
+  }
+});
+</script>
+</body>
+</html>
