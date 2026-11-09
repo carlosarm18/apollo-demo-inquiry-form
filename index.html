@@ -84,7 +84,7 @@ code{font:12.5px Menlo,Consolas,monospace;background:#f1f4f8;padding:1px 5px;bor
 <main>
   <div class="card" id="connect" style="margin-bottom:20px;display:none">
     <h2>Connect to Apollo (one time, before the demo)</h2>
-    <p class="sub">In Apollo demo 90, open <b>Prospects &gt; Lead Intake</b>, copy the webhook token from the Configuration tab, and paste it here. It is saved only in this browser.</p>
+    <p class="sub">Sign in to the demo site, enter <b>Apollo Demo College (90)</b>, open <a href="https://demo.apollosrm.com/app/admin/lead-intake" target="_blank" rel="noopener">demo.apollosrm.com/app/admin/lead-intake</a>, copy the token from the Configuration tab, and paste it here. It is saved only in this browser.</p>
     <div class="row" style="grid-template-columns:1fr auto">
       <input id="tokenInput" type="password" placeholder="Paste the Lead Intake token">
       <button class="primary" id="saveToken" type="button">Connect</button>
@@ -221,7 +221,7 @@ code{font:12.5px Menlo,Consolas,monospace;background:#f1f4f8;padding:1px 5px;bor
 <script>
 // ---- Connection (demo account 90 only). Keep this file private; regenerate the token in Apollo after the demo.
 const WEBHOOK_URL = 'https://demo.apollosrm.com/apollosrm-yii2/apileadintake/webhook';
-// The token is NOT stored in this file. Paste it once (Prospects > Lead Intake > Configuration in Apollo); it is kept
+// The token is NOT stored in this file. Paste it once (demo site, account 90, /app/admin/lead-intake); it is kept
 // only in this browser's local storage. Clear it with the Disconnect link.
 const APOLLO = 'https://demo.apollosrm.com/app/admin';
 const KEY = 'apolloDemoLeadIntakeToken';
